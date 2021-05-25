@@ -2,7 +2,6 @@ package com.example.disastermngmnt;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -27,15 +26,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,8 +47,7 @@ public class MainActivity3 extends AppCompatActivity {
     List<WifiP2pDevice> peers = new ArrayList<>();
     String[] deviceNam;
     WifiP2pDevice[] device;
-    Socket socket;
-
+    Intent i ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +56,7 @@ public class MainActivity3 extends AppCompatActivity {
         sharedpreferences = getSharedPreferences("MyPREFERENCES", Context.MODE_PRIVATE);
         username = sharedpreferences.getString("Name", "NOT");
         type = sharedpreferences.getInt("Type", 0);
-        Toast.makeText(this, "Welcome " + username+"  "+String.valueOf(type), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Welcome " + username, Toast.LENGTH_SHORT).show();
         wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         intentFilter = new IntentFilter();
         manager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
@@ -111,6 +103,7 @@ public class MainActivity3 extends AppCompatActivity {
                     if (ActivityCompat.checkSelfPermission(MainActivity3.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
                         ActivityCompat.requestPermissions(MainActivity3.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
                 }
+
                 manager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
                     @Override
                     public void onSuccess() {
@@ -168,14 +161,18 @@ public class MainActivity3 extends AppCompatActivity {
         @Override
         public void onConnectionInfoAvailable(WifiP2pInfo wifiP2pInfo) {
             final InetAddress grpOwn=wifiP2pInfo.groupOwnerAddress;
+            SocketHandler.setHost(grpOwn);
             if(wifiP2pInfo.groupFormed && wifiP2pInfo.isGroupOwner){
                 t1.setText("GroupOwner");
                 t1.setTextColor(Color.GREEN);
+                startActivity(new Intent(getApplicationContext(), MainActivity4.class));
+
             }
             else if(wifiP2pInfo.groupFormed ){
                 Toast.makeText(getApplicationContext(), "Connected to a Group", Toast.LENGTH_SHORT).show();
                 t1.setText("Connected");
                 t1.setTextColor(Color.GREEN);
+                startActivity(new Intent(getApplicationContext(), MainActivity4.class));
             }
         }
     };
@@ -234,6 +231,7 @@ public class MainActivity3 extends AppCompatActivity {
         if (!wifi.isWifiEnabled()) {
             b1.setText("WiFi On\\Off");
             t1.setText("Not Connected");
+            t1.setTextColor(Color.RED);
             b2.setVisibility(View.INVISIBLE);
             l1.setVisibility(View.INVISIBLE);
         } else {
@@ -287,27 +285,6 @@ public class MainActivity3 extends AppCompatActivity {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
             e.printStackTrace();
-        }
-    }
-    public class ClientClass extends Thread{
-        String hostAdd;
-        private InputStream inputStream;
-        private OutputStream outputStream;
-        public ClientClass(InetAddress hostAddress) {
-            hostAdd=hostAddress.getHostAddress();
-            socket=new Socket();
-        }
-
-        @Override
-        public void run() {
-            super.run();
-            try {
-                socket.connect(new InetSocketAddress(hostAdd,8889),500);
-                inputStream=socket.getInputStream();
-                outputStream=socket.getOutputStream();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 }

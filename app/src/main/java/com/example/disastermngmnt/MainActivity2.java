@@ -25,6 +25,20 @@ public class MainActivity2 extends AppCompatActivity {
             setTitle("Create Profile");
             radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
             username = findViewById(R.id.editTextTextPersonName);
+            radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                    RadioButton rb=radioGroup.findViewById(i);
+                    if(rb.getText().toString().equalsIgnoreCase("RESCUER"))
+                    {
+                        username.setVisibility(View.INVISIBLE);
+                    }
+                    else
+                        {
+                        username.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
         }
         else
             moveToNext();
@@ -32,15 +46,22 @@ public class MainActivity2 extends AppCompatActivity {
     public void onSubmit(View v) {
         RadioButton rb = (RadioButton) radioGroup.findViewById(radioGroup.getCheckedRadioButtonId());
         SharedPreferences.Editor editor = sharedpreferences.edit();
-        if((username.getText().toString()==null )|| (username.getText().toString().equals(""))) {
-            Toast.makeText(this,"Enter a Valid Username",Toast.LENGTH_SHORT).show();
-        }
-        else {
-            int type = rb.getText().toString().equalsIgnoreCase("Victim") ? 0 : 1;
-            editor.putString("Name", username.getText().toString());
+        int type = rb.getText().toString().equalsIgnoreCase("Victim") ? 0 : 1;
+        if(type==1) {
+            editor.putString("Name", "RESCUER");
             editor.putInt("Type", type);
             editor.commit();
             moveToNext();
+        }
+        else {
+            if ((username.getText().toString() == null) || (username.getText().toString().equals("")))
+                Toast.makeText(this, "Enter a Valid Username", Toast.LENGTH_SHORT).show();
+            else {
+                editor.putString("Name", username.getText().toString());
+                editor.putInt("Type", type);
+                editor.commit();
+                moveToNext();
+            }
         }
     }
     public void moveToNext()
