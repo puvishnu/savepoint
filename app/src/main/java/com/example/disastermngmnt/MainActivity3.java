@@ -73,13 +73,14 @@ public class MainActivity3 extends AppCompatActivity {
         b2 = findViewById(R.id.button4);
         l1 = findViewById(R.id.list);
         t1=findViewById(R.id.textView2);
-        b1.setText("WiFi On\\Off");
         t1.setText("Not Connected");
         t1.setTextColor(Color.RED);
         if (!wifi.isWifiEnabled()) {
+            b1.setText("WiFi On");
             b2.setVisibility(View.INVISIBLE);
             l1.setVisibility(View.INVISIBLE);
         } else {
+            b1.setText("WiFi Off");
             b2.setVisibility(View.VISIBLE);
             l1.setVisibility(View.VISIBLE);
         }
@@ -88,10 +89,13 @@ public class MainActivity3 extends AppCompatActivity {
             public void onClick(View view) {
                 startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                 if (!wifi.isWifiEnabled()) {
+                    b1.setText("WiFi On");
                     b2.setVisibility(View.INVISIBLE);
                     l1.setVisibility(View.INVISIBLE);
                 } else {
+                    b1.setText("WiFi Off");
                     b2.setVisibility(View.VISIBLE);
+                    l1.setVisibility(View.INVISIBLE);
                 }
 
             }
@@ -229,12 +233,13 @@ public class MainActivity3 extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (!wifi.isWifiEnabled()) {
-            b1.setText("WiFi On\\Off");
+            b1.setText("WiFi On");
             t1.setText("Not Connected");
             t1.setTextColor(Color.RED);
             b2.setVisibility(View.INVISIBLE);
             l1.setVisibility(View.INVISIBLE);
         } else {
+            b1.setText("WiFi Off");
             b2.setVisibility(View.VISIBLE);
         }
         registerReceiver(receiver,intentFilter);

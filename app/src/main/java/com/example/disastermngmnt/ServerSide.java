@@ -37,12 +37,12 @@ class ReadThreadForServer implements Runnable
                     socket.receive(datagram);
                     Log.i("ReadFromClient", "SUCCESS");
                     message = new String(buffer,0,datagram.getLength(),"UTF-8");
-                    if(message.contains("Hii"))
+                    if(message.contains("Hii")) {
                         SocketHandler.setAddressClient(datagram.getAddress());
-                    if(!message.startsWith(chatName))
-                    {
-                        activity4.writeToList(message);
+                        int index=message.indexOf(":");
+                        SocketHandler.setNameClient(message.substring(0,index));
                     }
+                    activity4.writeToList(message);
                     socket.disconnect();
                     socket.close();
                     }

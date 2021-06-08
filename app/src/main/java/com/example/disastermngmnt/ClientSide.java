@@ -1,8 +1,5 @@
 package com.example.disastermngmnt;
-import android.graphics.Color;
 import android.util.Log;
-import android.widget.TextView;
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -40,10 +37,16 @@ class ReadThreadForClient implements Runnable
                     socket.receive(datagram);
                         Log.i("ReadFromServer", "SUCCESS");
                     message = new String(buffer,0,datagram.getLength(),"UTF-8");
-                    if(!message.startsWith(chatName))
+                    if(!message.startsWith("LTNLG"))
                     {
                         activity4.writeToList(message);
                     }
+                    else
+                        {
+                            activity4.getRescueLocation(message.substring(6));
+                            activity4.writeToList("Click menu button to check rescuer location");
+                    }
+
                 }
                 catch(IOException e)
                 {

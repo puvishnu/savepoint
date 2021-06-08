@@ -73,7 +73,7 @@ public class AudioCallForClients {
                     while(mic) {
                         // Capture audio from the mic and transmit it
                         bytes_read = audioRecorder.read(buf, 0, BUF_SIZE);
-                        packet = new DatagramPacket(buf, bytes_read,addressForClient, portClientSend);
+                        packet = new DatagramPacket(buf, buf.length,addressForClient, portClientSend);
                         socket.send(packet);
                         bytes_sent += bytes_read;
                         Log.i(LOG_TAG, "Total bytes sent: " + bytes_sent);
